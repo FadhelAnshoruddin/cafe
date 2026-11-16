@@ -7,6 +7,62 @@
     <title>@yield('title', 'Dashboard') — Cafe Senja</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- FIX LAYOUT: ruang konten selalu dimulai setelah sidebar --}}
+    <style>
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        @media (min-width: 768px) {
+            aside.manager-sidebar {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                bottom: 0 !important;
+                width: 248px !important;
+                height: 100vh !important;
+                z-index: 40 !important;
+            }
+
+            main.manager-main-content {
+                display: block !important;
+                position: relative !important;
+                z-index: 1 !important;
+                box-sizing: border-box !important;
+                margin-left: 248px !important;
+                width: calc(100% - 248px) !important;
+                min-width: 0 !important;
+                min-height: 100vh;
+            }
+        }
+
+        @media (max-width: 767px) {
+            aside.manager-sidebar {
+                position: relative !important;
+                width: 100% !important;
+                height: auto !important;
+            }
+
+            main.manager-main-content {
+                display: block !important;
+                margin-left: 0 !important;
+                width: 100% !important;
+                min-width: 0 !important;
+            }
+        }
+
+        .manager-content-wrapper {
+            width: 100%;
+            max-width: 1440px;
+            margin-left: auto;
+            margin-right: auto;
+            min-width: 0;
+        }
+    </style>
 </head>
 
 <body class="min-h-screen bg-[#121010] text-[#EDE6E1] font-[Inter,Arial,sans-serif] antialiased overflow-x-hidden">
@@ -14,7 +70,7 @@
 <div class="min-h-screen md:flex">
 
     {{-- SIDEBAR --}}
-    <aside class="relative w-full bg-[#0D0B0A] border-b border-[#29211F] flex flex-col md:fixed md:inset-y-0 md:left-0 md:z-40 md:w-[248px] md:border-b-0 md:border-r md:border-[#29211F]">
+    <aside class="manager-sidebar relative w-full bg-[#0D0B0A] border-b border-[#29211F] flex flex-col md:fixed md:inset-y-0 md:left-0 md:z-40 md:w-[248px] md:border-b-0 md:border-r md:border-[#29211F]">
 
         {{-- LOGO --}}
         <div class="flex items-center gap-3 px-5 py-5 md:px-6 md:py-7">
@@ -191,9 +247,9 @@
     </aside>
 
     {{-- MAIN CONTENT --}}
-    <main class="w-full min-w-0 px-4 py-5 sm:px-6 sm:py-6 md:ml-[248px] md:w-[calc(100%-248px)] md:px-7 md:py-7 xl:px-8 xl:py-8">
+    <main class="manager-main-content w-full min-w-0 px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7 xl:px-8 xl:py-8">
 
-        <div class="w-full min-w-0 max-w-[1600px] mx-auto">
+        <div class="manager-content-wrapper">
             @yield('content')
         </div>
 
