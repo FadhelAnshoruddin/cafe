@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
                 'nomor_hp' => null,
                 'password_hash' => Hash::make('Manajer123!'),
                 'peran' => 'manajer',
-                'wajib_ganti_password' => true,
+                'Manajer123' => true,
                 'dibuat_pada' => now(),
             ]
         );
@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
                 'nomor_hp' => null,
                 'password_hash' => Hash::make('Kasir12345!'),
                 'peran' => 'kasir',
-                'wajib_ganti_password' => true,
+                'Kasir123' => true,
                 'dibuat_pada' => now(),
             ]
         );

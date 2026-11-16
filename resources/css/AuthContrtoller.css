@@ -1,0 +1,31 @@
+/* ============================================= */
+/* Cafe Senja — Auth Page Styles                 */
+/* ============================================= */
+
+.login-input {
+    @apply w-full h-12 px-4 rounded-lg text-[15px]
+           bg-[#1C1716] text-[#EDE6E1]
+           border border-[#322927]
+           placeholder-[#8F8480]
+           outline-none
+           transition-all duration-200 ease-in-out;
+}
+
+.login-input:focus {
+    @apply border-[#9E2B27] ring-1 ring-[#9E2B27]/40;
+}
+
+.login-button {
+    @apply w-full h-[52px] rounded-lg text-[15px] font-semibold
+           bg-[#9E2B27] text-[#EDE6E1]
+           cursor-pointer
+           transition-all duration-200 ease-in-out;
+}
+
+.login-button:hover {
+    @apply bg-[#b73430] shadow-lg shadow-[#9E2B27]/25;
+}
+
+.login-button:active {
+    @apply bg-[#8a2422] scale-[0.98];
+}
