@@ -12,20 +12,20 @@ class UserSeeder extends Seeder
     {
       
         DB::table('users')->updateOrInsert(
-            ['username' => 'Intan Kusuma'],
+            ['username' => 'Intan'],
             [
                 'nomor_hp' => null,
-                'password_hash' => Hash::make('Intan Kusuma123'),
+                'password_hash' => Hash::make('Intan123'),
                 'peran' => 'kasir',
                 'dibuat_pada' => now(),
             ]
         );
 
         DB::table('users')->updateOrInsert(
-            ['username' => 'Dio Permana'],
+            ['username' => 'Permana'],
             [
                 'nomor_hp' => null,
-                'password_hash' => Hash::make('Dio Permana123'),
+                'password_hash' => Hash::make('Permana123'),
                 'peran' => 'manajer',
                 'dibuat_pada' => now(),
             ]

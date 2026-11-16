@@ -10,12 +10,11 @@
 
     <div class="flex min-h-screen">
 
-        {{-- ============================================= --}}
         {{-- SIDEBAR --}}
-        {{-- ============================================= --}}
         <aside class="fixed inset-y-0 left-0 z-40 w-[248px] bg-[#0B0909] flex flex-col">
 
             {{-- Logo --}}
+
             <div class="flex items-center gap-3 px-[26px] py-[30px]">
                 <div class="w-9 h-9 rounded-md bg-[#EDE6E1] flex items-center justify-center shrink-0 overflow-hidden">
                     <img src="{{ asset('asset/logo-coffe-senja.png') }}" alt="Logo" class="w-full h-full object-cover" />
@@ -27,6 +26,7 @@
             </div>
 
             {{-- Navigasi --}}
+
             <nav class="flex-1 px-4 space-y-1">
                 @php
                     $navItems = [
@@ -52,6 +52,7 @@
                                 : 'text-[#B5A9A3] hover:bg-[#1C1716] hover:text-[#EDE6E1]' }}"
                     >
                         {{-- Icon SVG inline --}}
+
                         @switch($item['icon'])
                             @case('chart')
                                 <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13h4v8H3zm7-5h4v13h-4zm7-5h4v18h-4z"/></svg>
@@ -76,6 +77,7 @@
             </nav>
 
             {{-- Footer sidebar --}}
+
             <div class="px-4 py-6 border-t border-[#1C1716]">
                 <div class="flex items-center gap-3 text-[13px] text-[#8F8480]">
                     <form method="POST" action="{{ route('logout') }}" class="inline">
@@ -88,9 +90,8 @@
             </div>
         </aside>
 
-        {{-- ============================================= --}}
         {{-- KONTEN UTAMA --}}
-        {{-- ============================================= --}}
+
         <main class="flex-1 ml-[248px] p-8">
             @yield('content')
         </main>
