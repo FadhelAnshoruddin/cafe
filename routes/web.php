@@ -1,27 +1,27 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
+// HALAMAN UTAMA
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// AUTENTIKASI
 Route::middleware('guest')->group(function () {
 
-    // Menampilkan halaman autentikasi
     Route::get('/auth', [AuthController::class, 'index'])
         ->name('login');
 
-    // URL lama diarahkan ke /auth
     Route::redirect('/login', '/auth');
 
-    // Memproses autentikasi
     Route::post('/auth', [AuthController::class, 'login'])
         ->name('login.process');
 
 });
 
+// HALAMAN MANAJER
 Route::middleware(['auth', 'role:manajer'])->group(function () {
 
     Route::get('/manajer/dashboard', function () {
@@ -46,6 +46,7 @@ Route::middleware(['auth', 'role:manajer'])->group(function () {
 
 });
 
+// HALAMAN KASIR
 Route::middleware(['auth', 'role:kasir'])->group(function () {
 
     Route::get('/kasir/dashboard', function () {
@@ -54,6 +55,7 @@ Route::middleware(['auth', 'role:kasir'])->group(function () {
 
 });
 
+// LOGOUT
 Route::middleware('auth')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])
