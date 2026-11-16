@@ -1,11 +1,551 @@
-/* Perbaikan posisi layout Manajer. Tidak mengubah tema maupun komponen UI. */
-html, body { width: 100%; min-height: 100%; margin: 0; overflow-x: hidden; }
-.manager-content-wrapper { width: 100%; max-width: 1440px; margin-left: auto; margin-right: auto; min-width: 0; }
-@media (min-width: 768px) {
-  aside.manager-sidebar { position: fixed !important; top: 0 !important; left: 0 !important; bottom: 0 !important; width: 248px !important; height: 100vh !important; z-index: 40 !important; }
-  main.manager-main-content { display: block !important; position: relative !important; z-index: 1 !important; box-sizing: border-box !important; margin-left: 248px !important; width: calc(100% - 248px) !important; min-width: 0 !important; min-height: 100vh; }
+/* =========================================
+   DASHBOARD MANAJER - COFFEE SENJA
+   Theme: Dark Elegant
+========================================= */
+
+:root {
+    --sidebar-width: 265px;
+
+    --bg-main: #151211;
+    --bg-card: #211b19;
+    --bg-card-hover: #2b211e;
+    --bg-sidebar: #100d0c;
+
+    --primary: #b83b32;
+    --primary-hover: #d34b40;
+
+    --text-main: #f5eee9;
+    --text-muted: #a99a91;
+
+    --border: #3b2d28;
+    --success: #82b99a;
+    --warning: #e6a36f;
+    --danger: #e4776e;
+
+    --radius: 14px;
 }
-@media (max-width: 767px) {
-  aside.manager-sidebar { position: relative !important; width: 100% !important; height: auto !important; }
-  main.manager-main-content { display: block !important; margin-left: 0 !important; width: 100% !important; min-width: 0 !important; }
+
+/* RESET */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    overflow-x: hidden;
+}
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    padding: 22px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.sidebar-menu {
+    padding: 15px 10px;
+}
+
+.sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 15px;
+    margin-bottom: 5px;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-radius: 9px;
+    transition: 0.25s ease;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    color: white;
+    background: #382722;
+}
+
+.sidebar a.active {
+    border-left: 3px solid var(--primary);
+}
+
+/* =========================================
+   MAIN CONTENT
+========================================= */
+
+.main-content {
+    width: calc(100% - var(--sidebar-width));
+    min-height: 100vh;
+
+    margin-left: var(--sidebar-width);
+
+    padding: 35px 45px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/*
+   Pembungkus konten.
+   Gunakan class content-wrapper
+   pada isi setiap halaman.
+*/
+
+.content-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* =========================================
+   HEADER HALAMAN
+========================================= */
+
+.page-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+}
+
+.page-header h1 {
+    color: var(--text-main);
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 8px;
+}
+
+.page-header p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 0;
+}
+
+/* =========================================
+   BUTTON
+========================================= */
+
+.btn-primary,
+button.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 12px 20px;
+
+    background: var(--primary);
+    color: white;
+
+    border: none;
+    border-radius: 9px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    text-decoration: none;
+    cursor: pointer;
+
+    transition: 0.25s ease;
+}
+
+.btn-primary:hover,
+button.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(184, 59, 50, 0.2);
+}
+
+/* =========================================
+   SUMMARY / STATISTIC CARDS
+========================================= */
+
+.stats-grid,
+.summary-grid {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.stat-card,
+.summary-card {
+    min-width: 0;
+    padding: 22px;
+
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    transition: 0.25s ease;
+}
+
+.stat-card:hover,
+.summary-card:hover {
+    background: var(--bg-card-hover);
+    transform: translateY(-3px);
+    border-color: #65463a;
+}
+
+.stat-card h3,
+.summary-card h3 {
+    margin: 0 0 12px;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.stat-card .value,
+.summary-card .value {
+    color: var(--text-main);
+    font-size: 27px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.stat-card .description,
+.summary-card .description {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+/* Warna status kartu */
+
+.stat-card.success {
+    border-top: 3px solid var(--success);
+}
+
+.stat-card.warning {
+    border-top: 3px solid var(--warning);
+}
+
+.stat-card.danger {
+    border-top: 3px solid var(--danger);
+}
+
+/* =========================================
+   TABLE CONTAINER
+========================================= */
+
+.table-container,
+.table-card {
+    width: 100%;
+    background: var(--bg-card);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+
+/* Bagian pencarian tabel */
+
+.table-toolbar {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 15px 18px;
+    border-bottom: 1px solid var(--border);
+}
+
+.table-toolbar input,
+.search-input,
+input[type="search"] {
+    width: 260px;
+    max-width: 100%;
+
+    padding: 11px 14px;
+
+    background: #171312;
+    color: var(--text-main);
+
+    border: 1px solid var(--border);
+    border-radius: 9px;
+
+    outline: none;
+}
+
+.table-toolbar input:focus,
+.search-input:focus,
+input[type="search"]:focus {
+    border-color: var(--primary);
+}
+
+/* Tabel */
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text-main);
+    font-size: 14px;
+}
+
+table thead {
+    background: #2b211e;
+}
+
+table th {
+    padding: 15px 18px;
+    color: #d7c4b8;
+
+    text-align: left;
+    font-weight: 600;
+
+    white-space: nowrap;
+    border-bottom: 1px solid var(--border);
+}
+
+table td {
+    padding: 13px 18px;
+    color: #e4d9d2;
+
+    border-bottom: 1px solid #342925;
+    vertical-align: middle;
+}
+
+table tbody tr {
+    transition: 0.2s ease;
+}
+
+table tbody tr:hover {
+    background: #30231f;
+}
+
+table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* =========================================
+   STATUS BADGE
+========================================= */
+
+.badge {
+    display: inline-block;
+    padding: 5px 11px;
+
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-success {
+    background: rgba(91, 160, 116, 0.15);
+    color: var(--success);
+}
+
+.badge-warning {
+    background: rgba(230, 163, 111, 0.15);
+    color: var(--warning);
+}
+
+.badge-danger {
+    background: rgba(228, 119, 110, 0.15);
+    color: var(--danger);
+}
+
+/* =========================================
+   FORM
+========================================= */
+
+.form-card {
+    width: 100%;
+    max-width: 800px;
+
+    padding: 25px;
+    margin: 0 auto 25px;
+
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    color: #e6d8d0;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 14px;
+
+    background: #171312;
+    color: var(--text-main);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--primary);
+}
+
+/* =========================================
+   RECIPE / MENU CARDS
+========================================= */
+
+.card-grid {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 20px;
+}
+
+.content-card {
+    padding: 20px;
+
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    transition: 0.25s ease;
+}
+
+.content-card:hover {
+    transform: translateY(-4px);
+    border-color: #65463a;
+}
+
+.content-card h3 {
+    color: var(--text-main);
+    margin-top: 0;
+}
+
+.content-card p {
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.page-footer {
+    width: 100%;
+    margin-top: auto;
+    padding-top: 25px;
+
+    color: #84756d;
+    font-size: 12px;
+    text-align: center;
+}
+
+/* =========================================
+   RESPONSIVE TABLET
+========================================= */
+
+@media (max-width: 992px) {
+    :root {
+        --sidebar-width: 220px;
+    }
+
+    .main-content {
+        padding: 28px 25px;
+    }
+
+    .stats-grid,
+    .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* =========================================
+   RESPONSIVE MOBILE
+========================================= */
+
+@media (max-width: 768px) {
+    :root {
+        --sidebar-width: 0px;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .main-content {
+        width: 100%;
+        margin-left: 0;
+        padding: 22px 16px;
+    }
+
+    .page-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .stats-grid,
+    .summary-grid,
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card,
+    .summary-card {
+        padding: 18px;
+    }
+
+    .page-header h1 {
+        font-size: 23px;
+    }
+
+    .table-container,
+    .table-card {
+        overflow-x: auto;
+    }
 }

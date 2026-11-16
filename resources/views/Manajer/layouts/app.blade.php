@@ -7,52 +7,28 @@
     <title>@yield('title', 'Dashboard') — Cafe Senja</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('css/DashboardManajer.css') }}">
 
-    {{-- FIX LAYOUT: ruang konten selalu dimulai setelah sidebar --}}
     <style>
-        html, body {
-            width: 100%;
-            min-height: 100%;
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
             margin: 0;
+            min-height: 100%;
             overflow-x: hidden;
         }
 
-        @media (min-width: 768px) {
-            aside.manager-sidebar {
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                bottom: 0 !important;
-                width: 248px !important;
-                height: 100vh !important;
-                z-index: 40 !important;
-            }
-
-            main.manager-main-content {
-                display: block !important;
-                position: relative !important;
-                z-index: 1 !important;
-                box-sizing: border-box !important;
-                margin-left: 248px !important;
-                width: calc(100% - 248px) !important;
-                min-width: 0 !important;
-                min-height: 100vh;
-            }
-        }
-
-        @media (max-width: 767px) {
-            aside.manager-sidebar {
-                position: relative !important;
-                width: 100% !important;
-                height: auto !important;
-            }
-
-            main.manager-main-content {
-                display: block !important;
-                margin-left: 0 !important;
-                width: 100% !important;
-                min-width: 0 !important;
-            }
+        /* AREA KONTEN UTAMA */
+        .manager-main-content {
+            width: 100%;
+            min-width: 0;
+            min-height: 100vh;
+            padding: 28px 32px;
+            position: relative;
+            z-index: 1;
         }
 
         .manager-content-wrapper {
@@ -60,7 +36,39 @@
             max-width: 1440px;
             margin-left: auto;
             margin-right: auto;
-            min-width: 0;
+        }
+
+        /* SIDEBAR DESKTOP */
+        @media (min-width: 768px) {
+            .manager-sidebar {
+                position: fixed !important;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 248px !important;
+                height: 100vh;
+                z-index: 40;
+            }
+
+            .manager-main-content {
+                margin-left: 248px !important;
+                width: calc(100% - 248px) !important;
+            }
+        }
+
+        /* TAMPILAN MOBILE */
+        @media (max-width: 767px) {
+            .manager-sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .manager-main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+                padding: 20px 16px;
+            }
         }
     </style>
 </head>
@@ -177,7 +185,7 @@
 
                             @case('resep')
                                 <svg class="w-[19px] h-[19px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.331 0 4.466.89 6.042 2.355M12 6.042A8.968 8.968 0 0118 3.75c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18c-2.331 0-4.466.89-6.042 2.355M12 6.042V20.355"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.331 0 4.466.89 6.042 2.355M12 6.042A8.968 8.968 0 0118 3.75c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18c-2.331 0-4.466.89-6.042 2.355M12 6.042V20.355"/>
                                 </svg>
                                 @break
 
@@ -247,7 +255,7 @@
     </aside>
 
     {{-- MAIN CONTENT --}}
-    <main class="manager-main-content w-full min-w-0 px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7 xl:px-8 xl:py-8">
+    <main class="manager-main-content">
 
         <div class="manager-content-wrapper">
             @yield('content')
