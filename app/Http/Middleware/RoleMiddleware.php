@@ -8,9 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
-    /**
-     * Memeriksa hak akses pengguna berdasarkan role.
-     */
+    
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
         // Memastikan pengguna sudah login

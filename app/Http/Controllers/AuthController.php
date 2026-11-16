@@ -7,13 +7,13 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    // Menampilkan halaman login
+    // Menampilkan halaman autentikasi
     public function index()
     {
-        return view('auth.login');
+        return view('Auth.AuthController');
     }
 
-    // Memproses login
+    // Memproses autentikasi
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -27,15 +27,21 @@ class AuthController extends Controller
 
             $user = Auth::user();
 
+            // Redirect Manajer
             if ($user->role === 'manajer') {
                 return redirect()->route('manajer.dashboard');
             }
 
+            // Redirect Kasir
             if ($user->role === 'kasir') {
                 return redirect()->route('kasir.dashboard');
             }
 
+            // Jika role tidak memiliki akses website
             Auth::logout();
+
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
 
             return redirect()->route('login')
                 ->withErrors([
@@ -48,7 +54,7 @@ class AuthController extends Controller
         ])->onlyInput('username');
     }
 
-    // Logout
+    // Memproses logout
     public function logout(Request $request)
     {
         Auth::logout();

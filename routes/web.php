@@ -3,36 +3,50 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
-// AUTHENTICATION
+
+
+Route::get('/', function () {
+    return redirect()->route('login');
+});
+
+
 Route::middleware('guest')->group(function () {
 
-    Route::get('/login', [AuthController::class, 'index'])
+    // Menampilkan halaman autentikasi
+    Route::get('/auth', [AuthController::class, 'index'])
         ->name('login');
 
-    Route::post('/login', [AuthController::class, 'login'])
+    // URL lama diarahkan ke /auth
+    Route::redirect('/login', '/auth');
+
+    // Memproses autentikasi
+    Route::post('/auth', [AuthController::class, 'login'])
         ->name('login.process');
 
 });
 
-// MANAJER
+
+
 Route::middleware(['auth', 'role:manajer'])->group(function () {
 
     Route::get('/manajer/dashboard', function () {
-        return view('manajer.dashboard');
+        return view('Manajer.DashboardManajer');
     })->name('manajer.dashboard');
 
 });
 
-// KASIR
+
 Route::middleware(['auth', 'role:kasir'])->group(function () {
 
     Route::get('/kasir/dashboard', function () {
-        return view('kasir.dashboard');
+        return view('Kasir.DashboardKasir');
     })->name('kasir.dashboard');
 
 });
 
-// LOGOUT
+
+
+
 Route::middleware('auth')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])
