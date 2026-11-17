@@ -192,25 +192,34 @@
 
                         </td>
 
-                        <td class="px-5 py-4">
+                      <td class="px-5 py-4">
+                             <div class="flex items-center justify-center gap-3">
 
-                            <div class="flex items-center justify-center gap-3">
+                                {{-- AKTIF --}}
+                                <button
+                                    type="button"
+                                    class="text-xs font-medium text-[#86B394] hover:text-green-300 transition-colors cursor-pointer">
+                                    Aktif
+                                </button>
 
-                                <button type="button"
+                                {{-- NON AKTIF --}}
+                                <button
+                                    type="button"
+                                    class="text-xs font-medium text-[#D8756D] hover:text-red-300 transition-colors cursor-pointer">
+                                    Non aktif
+                                </button>
+
+                                {{-- EDIT --}}
+                                <button
+                                    type="button"
                                     class="text-xs font-medium text-[#B5A9A3] hover:text-white transition-colors cursor-pointer">
                                     Edit
                                 </button>
 
-                                <button type="button"
-                                    class="text-xs font-medium text-[#D8756D] hover:text-red-300 transition-colors cursor-pointer">
-                                    Hapus
-                                </button>
+                    </div>
+                </td>
 
-                            </div>
-
-                        </td>
-
-                    </tr>
+    </tr>
 
                 @endforeach
 
