@@ -10,22 +10,23 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-      
+        // Akun Kasir
         DB::table('users')->updateOrInsert(
-            ['username' => 'Intan'],
+            ['username' => 'Kasir'],
             [
                 'nomor_hp' => null,
-                'password_hash' => Hash::make('Intan123'),
+                'password_hash' => Hash::make('Kasir123'),
                 'peran' => 'kasir',
                 'dibuat_pada' => now(),
             ]
         );
 
+        // Akun Manajer
         DB::table('users')->updateOrInsert(
-            ['username' => 'Permana'],
+            ['username' => 'Manajer'],
             [
                 'nomor_hp' => null,
-                'password_hash' => Hash::make('Permana123'),
+                'password_hash' => Hash::make('Manajer123'),
                 'peran' => 'manajer',
                 'dibuat_pada' => now(),
             ]

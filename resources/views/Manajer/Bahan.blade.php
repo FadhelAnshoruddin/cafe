@@ -5,23 +5,11 @@
 @section('content')
 
 @php
-    $bahans = [
-        ['nama' => 'Biji kopi', 'satuan' => 'gram', 'stok' => 450, 'min' => 500, 'harga' => 150],
-        ['nama' => 'Susu UHT', 'satuan' => 'liter', 'stok' => 0.3, 'min' => 2, 'harga' => 18000],
-        ['nama' => 'Gula', 'satuan' => 'gram', 'stok' => 2000, 'min' => 500, 'harga' => 15],
-        ['nama' => 'Gula aren', 'satuan' => 'ml', 'stok' => 800, 'min' => 300, 'harga' => 60],
-        ['nama' => 'Roti tawar', 'satuan' => 'lembar', 'stok' => 24, 'min' => 10, 'harga' => 1500],
-        ['nama' => 'Mentega', 'satuan' => 'gram', 'stok' => 400, 'min' => 200, 'harga' => 80],
-        ['nama' => 'Selai cokelat', 'satuan' => 'gram', 'stok' => 350, 'min' => 200, 'harga' => 120],
-        ['nama' => 'Gelas', 'satuan' => 'pcs', 'stok' => 40, 'min' => 40, 'harga' => 800],
-        ['nama' => 'Es batu', 'satuan' => 'gram', 'stok' => 5000, 'min' => 1000, 'harga' => 5],
-    ];
+    $totalBahan = $ingredients->count();
 
-    $totalBahan = count($bahans);
-
-    $bahanMenipis = collect($bahans)
-        ->filter(fn($b) => $b['stok'] <= $b['min'])
-        ->count();
+    $bahanMenipis = $ingredients->filter(function ($bahan) {
+        return $bahan->stok <= $bahan->stok_minimum;
+    })->count();
 
     $bahanAman = $totalBahan - $bahanMenipis;
 @endphp
@@ -44,6 +32,7 @@
     </div>
 
     <button type="button"
+        onclick="document.getElementById('formTambahBahan').classList.toggle('hidden')"
         class="inline-flex items-center justify-center gap-2 h-10 px-5 rounded-lg bg-[#A8322D] text-sm font-semibold text-white hover:bg-[#BD3C35] transition-colors cursor-pointer">
 
         <span class="text-lg leading-none">+</span>
@@ -53,17 +42,145 @@
 
 </div>
 
+
+{{-- PESAN SUKSES DAN ERROR --}}
+@if(session('success'))
+    <div class="mb-5 p-3 rounded-lg bg-green-900/30 border border-green-700 text-green-300 text-sm">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="mb-5 p-3 rounded-lg bg-red-900/30 border border-red-700 text-red-300 text-sm">
+        {{ session('error') }}
+    </div>
+@endif
+
+@if($errors->any())
+    <div class="mb-5 p-3 rounded-lg bg-red-900/30 border border-red-700 text-red-300 text-sm">
+        <ul class="list-disc pl-5">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
+{{-- FORM TAMBAH BAHAN --}}
+<div id="formTambahBahan"
+    class="hidden rounded-xl border border-[#342B28] bg-[#1C1918] p-5 mb-6">
+
+    <h2 class="text-base font-semibold text-[#F2ECE8] mb-4">
+        Tambah Bahan Baru
+    </h2>
+
+    <form action="{{ route('manajer.bahan.store') }}" method="POST">
+        @csrf
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            <div>
+                <label class="block text-sm text-[#A99B94] mb-2">
+                    Nama Bahan
+                </label>
+
+                <input type="text"
+                    name="nama_bahan"
+                    value="{{ old('nama_bahan') }}"
+                    required
+                    class="w-full h-10 px-3 rounded-lg bg-[#141110] border border-[#3A302D] text-sm text-[#EDE6E1] focus:outline-none focus:border-[#A8322D]">
+            </div>
+
+            <div>
+                <label class="block text-sm text-[#A99B94] mb-2">
+                    Satuan
+                </label>
+
+                <select name="satuan_dasar"
+                    required
+                    class="w-full h-10 px-3 rounded-lg bg-[#141110] border border-[#3A302D] text-sm text-[#EDE6E1] focus:outline-none focus:border-[#A8322D]">
+
+                    <option value="">Pilih satuan</option>
+                    <option value="g" {{ old('satuan_dasar') == 'g' ? 'selected' : '' }}>g</option>
+                    <option value="ml" {{ old('satuan_dasar') == 'ml' ? 'selected' : '' }}>ml</option>
+                    <option value="pcs" {{ old('satuan_dasar') == 'pcs' ? 'selected' : '' }}>pcs</option>
+
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm text-[#A99B94] mb-2">
+                    Stok Saat Ini
+                </label>
+
+                <input type="number"
+                    name="stok"
+                    value="{{ old('stok') }}"
+                    min="0"
+                    step="0.001"
+                    required
+                    class="w-full h-10 px-3 rounded-lg bg-[#141110] border border-[#3A302D] text-sm text-[#EDE6E1] focus:outline-none focus:border-[#A8322D]">
+            </div>
+
+            <div>
+                <label class="block text-sm text-[#A99B94] mb-2">
+                    Stok Minimum
+                </label>
+
+                <input type="number"
+                    name="stok_minimum"
+                    value="{{ old('stok_minimum') }}"
+                    min="0"
+                    step="0.001"
+                    required
+                    class="w-full h-10 px-3 rounded-lg bg-[#141110] border border-[#3A302D] text-sm text-[#EDE6E1] focus:outline-none focus:border-[#A8322D]">
+            </div>
+
+            <div>
+                <label class="block text-sm text-[#A99B94] mb-2">
+                    Harga per Satuan
+                </label>
+
+                <input type="number"
+                    name="harga_per_satuan_dasar"
+                    value="{{ old('harga_per_satuan_dasar') }}"
+                    min="0"
+                    step="0.01"
+                    required
+                    class="w-full h-10 px-3 rounded-lg bg-[#141110] border border-[#3A302D] text-sm text-[#EDE6E1] focus:outline-none focus:border-[#A8322D]">
+            </div>
+
+        </div>
+
+        <div class="flex gap-2 mt-5">
+
+            <button type="submit"
+                class="px-5 py-2 rounded-lg bg-[#A8322D] text-sm font-semibold text-white hover:bg-[#BD3C35]">
+                Simpan Bahan
+            </button>
+
+            <button type="button"
+                onclick="document.getElementById('formTambahBahan').classList.add('hidden')"
+                class="px-5 py-2 rounded-lg bg-[#342B28] text-sm text-[#EDE6E1]">
+                Batal
+            </button>
+
+        </div>
+    </form>
+
+</div>
+
+
 {{-- SUMMARY CARDS --}}
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
 
     <div class="rounded-xl border border-[#342B28] bg-[#1C1918] p-5">
-
         <p class="text-sm text-[#8F827C]">
             Total jenis bahan
         </p>
 
         <div class="flex items-end justify-between mt-3">
-
             <h3 class="text-2xl font-bold text-[#F2ECE8]">
                 {{ $totalBahan }}
             </h3>
@@ -71,19 +188,16 @@
             <span class="text-xs text-[#A99A93]">
                 Jenis bahan
             </span>
-
         </div>
-
     </div>
 
-    <div class="rounded-xl border border-[#49302B] bg-[#211918] p-5">
 
+    <div class="rounded-xl border border-[#49302B] bg-[#211918] p-5">
         <p class="text-sm text-[#C58A7F]">
             Stok menipis
         </p>
 
         <div class="flex items-end justify-between mt-3">
-
             <h3 class="text-2xl font-bold text-[#D8756D]">
                 {{ $bahanMenipis }}
             </h3>
@@ -91,19 +205,16 @@
             <span class="text-xs text-[#A77B73]">
                 Perlu diperiksa
             </span>
-
         </div>
-
     </div>
 
-    <div class="rounded-xl border border-[#304034] bg-[#1B201C] p-5">
 
+    <div class="rounded-xl border border-[#304034] bg-[#1B201C] p-5">
         <p class="text-sm text-[#8DB394]">
             Stok aman
         </p>
 
         <div class="flex items-end justify-between mt-3">
-
             <h3 class="text-2xl font-bold text-[#8DB394]">
                 {{ $bahanAman }}
             </h3>
@@ -111,12 +222,11 @@
             <span class="text-xs text-[#78927D]">
                 Persediaan normal
             </span>
-
         </div>
-
     </div>
 
 </div>
+
 
 {{-- TABLE CONTAINER --}}
 <div class="rounded-xl border border-[#342B28] bg-[#1C1918] overflow-hidden">
@@ -138,15 +248,15 @@
             type="text"
             id="searchBahan"
             placeholder="Cari bahan..."
-            class="w-full sm:w-52 h-9 px-3 rounded-lg bg-[#141110] border border-[#3A302D] text-sm text-[#EDE6E1] placeholder:text-[#756A65] focus:outline-none focus:border-[#A8322D] transition-colors"
-        >
+            class="w-full sm:w-52 h-9 px-3 rounded-lg bg-[#141110] border border-[#3A302D] text-sm text-[#EDE6E1] placeholder:text-[#756A65] focus:outline-none focus:border-[#A8322D] transition-colors">
 
     </div>
+
 
     {{-- TABLE --}}
     <div class="overflow-x-auto">
 
-        <table class="w-full min-w-[850px] text-left">
+        <table class="w-full min-w-[950px] text-left">
 
             <thead>
                 <tr class="bg-[#211C1A]">
@@ -175,41 +285,46 @@
                         Status
                     </th>
 
+                    <th class="px-5 py-3 text-xs font-semibold text-[#958780] text-center">
+                        Aksi
+                    </th>
+
                 </tr>
             </thead>
 
+
             <tbody id="tabelBahan" class="divide-y divide-[#342B28]/70">
 
-                @foreach($bahans as $bahan)
+                @forelse($ingredients as $bahan)
 
                     @php
-                        $isLow = $bahan['stok'] <= $bahan['min'];
+                        $isLow = $bahan->stok <= $bahan->stok_minimum;
                     @endphp
 
                     <tr class="hover:bg-[#29211F]/60 transition-colors">
 
                         <td class="px-5 py-4">
                             <span class="text-sm font-medium text-[#EDE6E1]">
-                                {{ $bahan['nama'] }}
+                                {{ $bahan->nama_bahan }}
                             </span>
                         </td>
 
                         <td class="px-5 py-4 text-sm text-[#A99B94]">
-                            {{ $bahan['satuan'] }}
+                            {{ $bahan->satuan_dasar }}
                         </td>
 
                         <td class="px-5 py-4 text-right">
                             <span class="text-sm font-semibold {{ $isLow ? 'text-[#D8756D]' : 'text-[#D6CCC5]' }}">
-                                {{ number_format($bahan['stok'], $bahan['stok'] == intval($bahan['stok']) ? 0 : 1, ',', '.') }}
+                                {{ number_format($bahan->stok, 3, ',', '.') }}
                             </span>
                         </td>
 
                         <td class="px-5 py-4 text-right text-sm text-[#8F827C]">
-                            {{ number_format($bahan['min'], 0, ',', '.') }}
+                            {{ number_format($bahan->stok_minimum, 3, ',', '.') }}
                         </td>
 
                         <td class="px-5 py-4 text-right text-sm text-[#C5B9B2]">
-                            Rp{{ number_format($bahan['harga'], 0, ',', '.') }}
+                            Rp{{ number_format($bahan->harga_per_satuan_dasar, 0, ',', '.') }}
                         </td>
 
                         <td class="px-5 py-4 text-center">
@@ -232,15 +347,122 @@
 
                         </td>
 
+
+                        {{-- AKSI --}}
+                        <td class="px-5 py-4 text-center">
+
+                            <button type="button"
+                                onclick="document.getElementById('editBahan{{ $bahan->id_bahan }}').classList.toggle('hidden')"
+                                class="text-xs text-blue-400 hover:text-blue-300 mr-2">
+                                Edit
+                            </button>
+
+                            <form action="{{ route('manajer.bahan.destroy', $bahan->id_bahan) }}"
+                                method="POST"
+                                class="inline"
+                                onsubmit="return confirm('Yakin ingin menghapus bahan ini?')">
+
+                                @csrf
+                                @method('DELETE')
+
+                                <button type="submit"
+                                    class="text-xs text-red-400 hover:text-red-300">
+                                    Hapus
+                                </button>
+
+                            </form>
+
+                        </td>
+
                     </tr>
 
-                @endforeach
+
+                    {{-- FORM EDIT --}}
+                    <tr id="editBahan{{ $bahan->id_bahan }}" class="hidden bg-[#211C1A]">
+
+                        <td colspan="7" class="p-5">
+
+                            <h3 class="text-sm font-semibold text-[#F2ECE8] mb-4">
+                                Edit Bahan: {{ $bahan->nama_bahan }}
+                            </h3>
+
+                            <form action="{{ route('manajer.bahan.update', $bahan->id_bahan) }}"
+                                method="POST">
+
+                                @csrf
+                                @method('PUT')
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                                    <input type="text"
+                                        name="nama_bahan"
+                                        value="{{ $bahan->nama_bahan }}"
+                                        required
+                                        class="h-10 px-3 rounded-lg bg-[#141110] border border-[#3A302D] text-sm text-[#EDE6E1]">
+
+                                    <select name="satuan_dasar"
+                                        required
+                                        class="h-10 px-3 rounded-lg bg-[#141110] border border-[#3A302D] text-sm text-[#EDE6E1]">
+
+                                        <option value="g" {{ $bahan->satuan_dasar == 'g' ? 'selected' : '' }}>g</option>
+                                        <option value="ml" {{ $bahan->satuan_dasar == 'ml' ? 'selected' : '' }}>ml</option>
+                                        <option value="pcs" {{ $bahan->satuan_dasar == 'pcs' ? 'selected' : '' }}>pcs</option>
+
+                                    </select>
+
+                                    <input type="number"
+                                        name="stok"
+                                        value="{{ $bahan->stok }}"
+                                        min="0"
+                                        step="0.001"
+                                        required
+                                        class="h-10 px-3 rounded-lg bg-[#141110] border border-[#3A302D] text-sm text-[#EDE6E1]">
+
+                                    <input type="number"
+                                        name="stok_minimum"
+                                        value="{{ $bahan->stok_minimum }}"
+                                        min="0"
+                                        step="0.001"
+                                        required
+                                        class="h-10 px-3 rounded-lg bg-[#141110] border border-[#3A302D] text-sm text-[#EDE6E1]">
+
+                                    <input type="number"
+                                        name="harga_per_satuan_dasar"
+                                        value="{{ $bahan->harga_per_satuan_dasar }}"
+                                        min="0"
+                                        step="0.01"
+                                        required
+                                        class="h-10 px-3 rounded-lg bg-[#141110] border border-[#3A302D] text-sm text-[#EDE6E1]">
+
+                                </div>
+
+                                <button type="submit"
+                                    class="mt-4 px-5 py-2 rounded-lg bg-[#A8322D] text-sm font-semibold text-white hover:bg-[#BD3C35]">
+                                    Simpan Perubahan
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                @empty
+
+                    <tr>
+                        <td colspan="7" class="px-5 py-8 text-center text-sm text-[#8F827C]">
+                            Belum ada data bahan. Silakan tambahkan bahan terlebih dahulu.
+                        </td>
+                    </tr>
+
+                @endforelse
 
             </tbody>
 
         </table>
 
     </div>
+
 
     {{-- FOOTER --}}
     <div class="px-5 py-3 border-t border-[#342B28]">
@@ -252,6 +474,7 @@
     </div>
 
 </div>
+
 
 {{-- SEARCH SCRIPT --}}
 <script>

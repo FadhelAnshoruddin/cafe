@@ -40,11 +40,11 @@ Route::middleware(['auth', 'role:manajer'])->group(function () {
 
     Route::patch('/manajer/menu/{menu}/status', [MenuController::class, 'toggleStatus'])
         ->name('manajer.menu.status');
-
+        
 
     // CRUD BAHAN
     Route::get('/manajer/bahan', [IngredientController::class, 'index'])
-        ->name('manajer.bahan');
+        ->name('manajer.bahan.index');
 
     Route::post('/manajer/bahan', [IngredientController::class, 'store'])
         ->name('manajer.bahan.store');

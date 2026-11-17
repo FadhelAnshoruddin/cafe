@@ -8,62 +8,71 @@ use Illuminate\Validation\Rule;
 
 class IngredientController extends Controller
 {
-    // READ
+    // Menampilkan seluruh data bahan
     public function index()
     {
-        $ingredients = Ingredient::latest('id_bahan')->get();
+        $ingredients = Ingredient::orderBy('id_bahan', 'desc')->get();
 
         return view('Manajer.Bahan', compact('ingredients'));
     }
 
-    // CREATE
+    // Menambahkan bahan baru
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama_bahan' => 'required|string|max:255',
-            'satuan_dasar' => 'required|string|max:50',
-            'harga_per_satuan_dasar' => 'required|numeric|min:0',
+            'nama_bahan' => 'required|string|max:255|unique:ingredients,nama_bahan',
+            'satuan_dasar' => 'required|in:g,ml,pcs',
             'stok' => 'required|numeric|min:0',
+            'stok_minimum' => 'required|numeric|min:0',
+            'harga_per_satuan_dasar' => 'required|numeric|min:0',
         ]);
+
+        $validated['harga_diperbarui_pada'] = now();
 
         Ingredient::create($validated);
 
         return redirect()
-            ->route('manajer.bahan')
-            ->with('success', 'Bahan berhasil ditambahkan.');
+            ->route('manajer.bahan.index')
+            ->with('success', 'Bahan berhasil ditambahkan!');
     }
 
-    // UPDATE
-    public function update(Request $request, Ingredient $ingredient)
+    // Memperbarui data bahan
+    public function update(Request $request, $id_bahan)
     {
+        $ingredient = Ingredient::findOrFail($id_bahan);
+
         $validated = $request->validate([
-            'nama_bahan' => 'required|string|max:255',
-            'satuan_dasar' => 'required|string|max:50',
-            'harga_per_satuan_dasar' => 'required|numeric|min:0',
+            'nama_bahan' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('ingredients', 'nama_bahan')
+                    ->ignore($ingredient->id_bahan, 'id_bahan'),
+            ],
+            'satuan_dasar' => 'required|in:g,ml,pcs',
             'stok' => 'required|numeric|min:0',
+            'stok_minimum' => 'required|numeric|min:0',
+            'harga_per_satuan_dasar' => 'required|numeric|min:0',
         ]);
+
+        $validated['harga_diperbarui_pada'] = now();
 
         $ingredient->update($validated);
 
         return redirect()
-            ->route('manajer.bahan')
-            ->with('success', 'Bahan berhasil diperbarui.');
+            ->route('manajer.bahan.index')
+            ->with('success', 'Data bahan berhasil diperbarui!');
     }
 
-    // DELETE
-    public function destroy(Ingredient $ingredient)
+    // Menghapus data bahan
+    public function destroy($id_bahan)
     {
-        if ($ingredient->recipes()->exists()) {
-            return back()->with(
-                'error',
-                'Bahan tidak dapat dihapus karena masih digunakan dalam resep.'
-            );
-        }
+        $ingredient = Ingredient::findOrFail($id_bahan);
 
         $ingredient->delete();
 
         return redirect()
-            ->route('manajer.bahan')
-            ->with('success', 'Bahan berhasil dihapus.');
+            ->route('manajer.bahan.index')
+            ->with('success', 'Bahan berhasil dihapus!');
     }
 }
