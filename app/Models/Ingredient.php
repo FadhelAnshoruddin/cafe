@@ -8,9 +8,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Ingredient extends Model
 {
     protected $table = 'ingredients';
+
     protected $primaryKey = 'id_bahan';
-    public $timestamps = false;
-    protected $guarded = [];
+
+    protected $fillable = [
+        'nama_bahan',
+        'satuan_dasar',
+        'harga_per_satuan_dasar',
+        'stok',
+    ];
 
     public function recipes(): HasMany
     {

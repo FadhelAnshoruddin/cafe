@@ -5,11 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+
 class Menu extends Model
 {
     protected $table = 'menus';
     protected $primaryKey = 'id_menu';
     public $timestamps = false;
+
+    public function recipes()
+    {
+    return $this->hasMany(Recipe::class, 'id_menu', 'id_menu');
+ }
 
     public function getRouteKeyName(): string
     {
@@ -31,7 +37,7 @@ class Menu extends Model
         ];
     }
 
-    public function recipes(): HasMany
+    public function recipe(): HasMany
     {
         return $this->hasMany(Recipe::class, 'id_menu', 'id_menu');
     }
