@@ -107,6 +107,14 @@
                                         {{ $menu->aktif ? 'Non aktif' : 'Aktif' }}
                                     </button>
                                 </form>
+                                <form method="POST" action="{{ route('manajer.menu.destroy', $menu->id_menu) }}"
+                                    onsubmit="return confirm('Hapus menu ini? Menu yang digunakan dalam resep atau pesanan tidak dapat dihapus.')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-xs font-medium text-[#D8756D] hover:text-red-300 transition-colors">
+                                        Hapus
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>
@@ -131,6 +139,7 @@
         <form id="menuForm" method="POST" action="{{ route('manajer.menu.store') }}" class="p-5 space-y-4">
             @csrf
             <input type="hidden" id="menuMethod" name="_method" value="POST" disabled>
+            <input type="hidden" id="menuId" name="menu_id">
             <div>
                 <label for="nama_menu" class="mb-1.5 block text-sm text-[#C5B8B1]">Nama menu</label>
                 <input id="nama_menu" name="nama_menu" required maxlength="255"
@@ -169,6 +178,7 @@ function openMenuModal(mode, id = null, nama = '', kategori = '', harga = '') {
 
     method.disabled = !editing;
     method.value = 'PUT';
+    document.getElementById('menuId').value = editing ? id : '';
     document.getElementById('nama_menu').value = nama;
     document.getElementById('kategori').value = kategori;
     document.getElementById('harga_jual').value = harga;
@@ -192,5 +202,14 @@ document.getElementById('menuModal').addEventListener('click', function (event) 
 document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape') closeMenuModal();
 });
+@if($errors->any())
+openMenuModal(
+    @js(old('_method') === 'PUT' ? 'edit' : 'create'),
+    @js(old('menu_id')),
+    @js(old('nama_menu', '')),
+    @js(old('kategori', '')),
+    @js(old('harga_jual', ''))
+);
+@endif
 </script>
 @endsection

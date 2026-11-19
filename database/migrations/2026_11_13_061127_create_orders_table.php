@@ -16,21 +16,21 @@ return new class extends Migration
 
             $table->enum('sumber', [
                 'kasir',
-                'apk'
+                'apk',
             ]);
 
             $table->unsignedTinyInteger('nomor_meja');
 
             $table->enum('metode_bayar', [
                 'tunai',
-                'qris'
+                'qris',
             ]);
 
             $table->enum('status', [
                 'baru',
                 'diproses',
                 'selesai',
-                'dibatalkan'
+                'dibatalkan',
             ])->default('baru');
 
             $table->decimal('subtotal', 12, 2);
@@ -44,15 +44,17 @@ return new class extends Migration
             $table->dateTime('dibuat_pada');
 
             $table->foreign('id_pengguna')
-                  ->references('id_pengguna')
-                  ->on('users');
+                ->references('id_pengguna')
+                ->on('users');
         });
 
-        DB::statement("
-            ALTER TABLE orders
-            ADD CONSTRAINT chk_orders_nomor_meja
-            CHECK (nomor_meja BETWEEN 1 AND 10)
-        ");
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement('
+                ALTER TABLE orders
+                ADD CONSTRAINT chk_orders_nomor_meja
+                CHECK (nomor_meja BETWEEN 1 AND 10)
+            ');
+        }
     }
 
     public function down(): void

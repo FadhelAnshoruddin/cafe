@@ -29,7 +29,7 @@
         </p>
 
         <h3 class="text-2xl font-bold text-[#F2ECE8] mt-3">
-            5
+            {{ $totalMenu }}
         </h3>
 
         <p class="text-xs text-[#8F827C] mt-1">
@@ -43,7 +43,7 @@
         </p>
 
         <h3 class="text-2xl font-bold text-[#F2ECE8] mt-3">
-            4
+            {{ $totalResep }}
         </h3>
 
         <p class="text-xs text-[#8F827C] mt-1">
@@ -57,7 +57,7 @@
         </p>
 
         <h3 class="text-2xl font-bold text-[#D8756D] mt-3">
-            3
+            {{ $stokMenipis }}
         </h3>
 
         <p class="text-xs text-[#A77B73] mt-1">
@@ -71,7 +71,7 @@
         </p>
 
         <h3 class="text-2xl font-bold text-[#8DB394] mt-3">
-            9
+            {{ $totalBahan }}
         </h3>
 
         <p class="text-xs text-[#78927D] mt-1">
@@ -116,7 +116,7 @@
 
         </a>
 
-        <a href="{{ route('manajer.bahan') }}"
+        <a href="{{ route('manajer.bahan.index') }}"
            class="rounded-lg border border-[#342B28] bg-[#211C1A] p-4 hover:border-[#A8322D] transition-colors">
 
             <h3 class="text-sm font-semibold text-[#EDE6E1]">

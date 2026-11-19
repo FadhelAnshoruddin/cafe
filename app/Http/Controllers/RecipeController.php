@@ -2,47 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Recipe;
-use App\Models\Menu;
 use App\Models\Ingredient;
+use App\Models\Menu;
+use App\Models\Recipe;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
-class RecipeController extends Controller{
-    
-    // READ: Menampilkan semua data resep
-    public function index()
+class RecipeController extends Controller
+{
+    public function index(): View
     {
-        $recipes = Recipe::with(['menu', 'ingredient'])
-            ->orderBy('id_resep')
-            ->get();
-
-        $menus = Menu::orderBy('nama_menu')->get();
-
-        $ingredients = Ingredient::orderBy('nama_bahan')->get();
-
-        return view('Manajer.Resep', compact(
-            'recipes',
-            'menus',
-            'ingredients'
-        ));
+        return view('Manajer.Resep', [
+            'recipes' => Recipe::with(['menu', 'ingredient'])
+                ->orderBy('id_menu')
+                ->orderBy('id_resep')
+                ->get(),
+            'menus' => Menu::orderBy('nama_menu')->get(),
+            'ingredients' => Ingredient::orderBy('nama_bahan')->get(),
+        ]);
     }
 
-
-    // CREATE: Menambahkan resep baru
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'id_menu' => 'required|exists:menus,id_menu',
-            'id_bahan' => 'required|exists:ingredients,id_bahan',
-            'takaran' => 'required|numeric|gt:0',
+            'id_menu' => ['required', 'exists:menus,id_menu'],
+            'id_bahan' => ['required', 'exists:ingredients,id_bahan'],
+            'takaran' => ['required', 'numeric', 'gt:0'],
         ]);
 
-        // Memeriksa apakah bahan sudah ada di resep menu tersebut
-        $duplicate = Recipe::where('id_menu', $validated['id_menu'])
-            ->where('id_bahan', $validated['id_bahan'])
-            ->exists();
-
-        if ($duplicate) {
+        if ($this->compositionExists($validated['id_menu'], $validated['id_bahan'])) {
             return back()
                 ->withInput()
                 ->with('error', 'Bahan tersebut sudah ada dalam resep menu ini.');
@@ -50,28 +39,18 @@ class RecipeController extends Controller{
 
         Recipe::create($validated);
 
-        return redirect()
-            ->route('manajer.resep')
-            ->with('success', 'Resep berhasil ditambahkan.');
+        return redirect()->route('manajer.resep')->with('success', 'Resep berhasil ditambahkan.');
     }
 
-
-    // UPDATE: Mengubah data resep
-    public function update(Request $request, Recipe $recipe)
+    public function update(Request $request, Recipe $recipe): RedirectResponse
     {
         $validated = $request->validate([
-            'id_menu' => 'required|exists:menus,id_menu',
-            'id_bahan' => 'required|exists:ingredients,id_bahan',
-            'takaran' => 'required|numeric|gt:0',
+            'id_menu' => ['required', 'exists:menus,id_menu'],
+            'id_bahan' => ['required', 'exists:ingredients,id_bahan'],
+            'takaran' => ['required', 'numeric', 'gt:0'],
         ]);
 
-        // Memeriksa duplikasi, kecuali data yang sedang diedit
-        $duplicate = Recipe::where('id_menu', $validated['id_menu'])
-            ->where('id_bahan', $validated['id_bahan'])
-            ->where('id_resep', '!=', $recipe->id_resep)
-            ->exists();
-
-        if ($duplicate) {
+        if ($this->compositionExists($validated['id_menu'], $validated['id_bahan'], $recipe)) {
             return back()
                 ->withInput()
                 ->with('error', 'Bahan tersebut sudah ada dalam resep menu ini.');
@@ -79,20 +58,22 @@ class RecipeController extends Controller{
 
         $recipe->update($validated);
 
-        return redirect()
-            ->route('manajer.resep')
-            ->with('success', 'Resep berhasil diperbarui.');
+        return redirect()->route('manajer.resep')->with('success', 'Resep berhasil diperbarui.');
     }
 
-
-    // DELETE: Menghapus data resep
-    public function destroy(Recipe $recipe)
+    public function destroy(Recipe $recipe): RedirectResponse
     {
         $recipe->delete();
 
-        return redirect()
-            ->route('manajer.resep')
-            ->with('success', 'Resep berhasil dihapus.');
+        return redirect()->route('manajer.resep')->with('success', 'Resep berhasil dihapus.');
     }
-    
+
+    private function compositionExists(int|string $menuId, int|string $ingredientId, ?Recipe $except = null): bool
+    {
+        return Recipe::query()
+            ->where('id_menu', $menuId)
+            ->where('id_bahan', $ingredientId)
+            ->when($except, fn ($query) => $query->where('id_resep', '!=', $except->id_resep))
+            ->exists();
+    }
 }

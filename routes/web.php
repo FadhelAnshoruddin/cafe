@@ -1,11 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\MenuController;
 use App\Http\Controllers\IngredientController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RecipeController;
-
+use App\Http\Controllers\StockInController;
+use App\Models\Ingredient;
+use App\Models\Menu;
+use App\Models\Recipe;
+use Illuminate\Support\Facades\Route;
 
 // HALAMAN LOGIN
 Route::get('/', function () {
@@ -18,15 +21,18 @@ Route::middleware('guest')->group(function () {
     Route::post('/auth', [AuthController::class, 'login'])->name('login.process');
 });
 
-
 // HALAMAN MANAJER
 Route::middleware(['auth', 'role:manajer'])->group(function () {
 
     // DASHBOARD
     Route::get('/manajer/dashboard', function () {
-        return view('Manajer.DashboardManajer');
+        return view('Manajer.DashboardManajer', [
+            'totalMenu' => Menu::count(),
+            'totalResep' => Recipe::distinct('id_menu')->count('id_menu'),
+            'stokMenipis' => Ingredient::whereColumn('stok', '<=', 'stok_minimum')->count(),
+            'totalBahan' => Ingredient::count(),
+        ]);
     })->name('manajer.dashboard');
-
 
     // CRUD MENU
     Route::get('/manajer/menu', [MenuController::class, 'index'])
@@ -38,9 +44,11 @@ Route::middleware(['auth', 'role:manajer'])->group(function () {
     Route::put('/manajer/menu/{menu}', [MenuController::class, 'update'])
         ->name('manajer.menu.update');
 
+    Route::delete('/manajer/menu/{menu}', [MenuController::class, 'destroy'])
+        ->name('manajer.menu.destroy');
+
     Route::patch('/manajer/menu/{menu}/status', [MenuController::class, 'toggleStatus'])
         ->name('manajer.menu.status');
-        
 
     // CRUD BAHAN
     Route::get('/manajer/bahan', [IngredientController::class, 'index'])
@@ -55,7 +63,6 @@ Route::middleware(['auth', 'role:manajer'])->group(function () {
     Route::delete('/manajer/bahan/{ingredient}', [IngredientController::class, 'destroy'])
         ->name('manajer.bahan.destroy');
 
-
     // CRUD RESEP
     Route::get('/manajer/resep', [RecipeController::class, 'index'])
         ->name('manajer.resep');
@@ -69,14 +76,20 @@ Route::middleware(['auth', 'role:manajer'])->group(function () {
     Route::delete('/manajer/resep/{recipe}', [RecipeController::class, 'destroy'])
         ->name('manajer.resep.destroy');
 
-
     // STOK MASUK
-    Route::get('/manajer/stok-masuk', function () {
-        return view('Manajer.StokMasuk');
-    })->name('manajer.stok-masuk');
+    Route::get('/manajer/stok-masuk', [StockInController::class, 'index'])
+        ->name('manajer.stok-masuk');
+
+    Route::post('/manajer/stok-masuk', [StockInController::class, 'store'])
+        ->name('manajer.stok-masuk.store');
+
+    Route::put('/manajer/stok-masuk/{stockIn}', [StockInController::class, 'update'])
+        ->name('manajer.stok-masuk.update');
+
+    Route::delete('/manajer/stok-masuk/{stockIn}', [StockInController::class, 'destroy'])
+        ->name('manajer.stok-masuk.destroy');
 
 });
-
 
 // HALAMAN KASIR
 Route::middleware(['auth', 'role:kasir'])->group(function () {
@@ -86,7 +99,6 @@ Route::middleware(['auth', 'role:kasir'])->group(function () {
     })->name('kasir.dashboard');
 
 });
-
 
 // LOGOUT
 Route::middleware('auth')->group(function () {

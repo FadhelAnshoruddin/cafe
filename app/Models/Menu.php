@@ -5,22 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-
 class Menu extends Model
 {
     protected $table = 'menus';
+
     protected $primaryKey = 'id_menu';
+
     public $timestamps = false;
-
-    public function recipes()
-    {
-    return $this->hasMany(Recipe::class, 'id_menu', 'id_menu');
- }
-
-    public function getRouteKeyName(): string
-    {
-        return 'id_menu';
-    }
 
     protected $fillable = [
         'nama_menu',
@@ -37,7 +28,17 @@ class Menu extends Model
         ];
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'id_menu';
+    }
+
     public function recipe(): HasMany
+    {
+        return $this->hasMany(Recipe::class, 'id_menu', 'id_menu');
+    }
+
+    public function recipes(): HasMany
     {
         return $this->hasMany(Recipe::class, 'id_menu', 'id_menu');
     }
