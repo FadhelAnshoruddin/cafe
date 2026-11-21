@@ -6,6 +6,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -34,6 +35,16 @@ class User extends Authenticatable
     public function getRoleAttribute(): string
     {
         return $this->peran;
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'id_pengguna', 'id_pengguna');
+    }
+
+    public function stockIns(): HasMany
+    {
+        return $this->hasMany(StockIn::class, 'id_pengguna', 'id_pengguna');
     }
 
     /**

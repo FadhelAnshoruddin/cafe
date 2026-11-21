@@ -42,4 +42,9 @@ class Menu extends Model
     {
         return $this->hasMany(Recipe::class, 'id_menu', 'id_menu');
     }
+
+    public function orderDetails(): HasMany
+    {
+        return $this->hasMany(OrderDetail::class, 'id_menu', 'id_menu');
+    }
 }

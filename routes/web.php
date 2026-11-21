@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\StockInController;
 use App\Models\Ingredient;
@@ -94,9 +95,26 @@ Route::middleware(['auth', 'role:manajer'])->group(function () {
 // HALAMAN KASIR
 Route::middleware(['auth', 'role:kasir'])->group(function () {
 
-    Route::get('/kasir/dashboard', function () {
-        return view('Kasir.DashboardKasir');
-    })->name('kasir.dashboard');
+    Route::get('/kasir/dashboard', [OrderController::class, 'index'])
+        ->name('kasir.dashboard');
+
+    Route::get('/kasir/pesanan/buat', [OrderController::class, 'create'])
+        ->name('kasir.orders.create');
+
+    Route::post('/kasir/pesanan', [OrderController::class, 'store'])
+        ->name('kasir.orders.store');
+
+    Route::get('/kasir/pesanan/{order}', [OrderController::class, 'show'])
+        ->name('kasir.orders.show');
+
+    Route::get('/kasir/pesanan/{order}/struk', [OrderController::class, 'receipt'])
+        ->name('kasir.orders.receipt');
+
+    Route::patch('/kasir/pesanan/{order}/status', [OrderController::class, 'updateStatus'])
+        ->name('kasir.orders.status');
+
+    Route::delete('/kasir/pesanan/{order}', [OrderController::class, 'destroy'])
+        ->name('kasir.orders.destroy');
 
 });
 
